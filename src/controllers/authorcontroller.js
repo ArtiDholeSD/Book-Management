@@ -7,7 +7,7 @@ const commonMw=require("../middleware/commonmiddleware")
 const authorsCollection = async function (req, res) {
     try {
         var data = req.body
-        let email = req.email
+       
         if (data) {
             let savedData = await AuthorModel.create(data)
             res.status(200).send({ status: true, msg: savedData })

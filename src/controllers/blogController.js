@@ -24,7 +24,7 @@ const getThisBlog = async function (req, res) {
 
     try {
         
-       if(Object.values(req.query).length===0){
+       if(Object.values(req.query).length===0){//returns array of i.e.[isDeleted:false,isPublished:true, ]
             let filter={isDeleted:false,isPublished:true,authorId:req.validToken._id}
             let data=await blogModel.find(filter)
             if(data){
@@ -59,11 +59,17 @@ const updateDetails = async function (req, res) {
         let id=req.validToken._id
         let Update = {}
         Update.title = await blogModel.findOneAndUpdate({ _id: req.params.blogId, isDeleted:false, authorId:id }, { title: title }, { new: true })
+
         Update.body = await blogModel.findOneAndUpdate({ _id: req.params.blogId, isDeleted:false, authorId:id  }, { body: body }, { new: true })
+
         Update.tags = await blogModel.findOneAndUpdate({ _id: req.params.blogId , isDeleted:false, authorId:id}, { $push: { tags: tags } }, { new: true })
+
         Update.subcategory = await blogModel.findOneAndUpdate({ _id: req.params.blogId, isDeleted:false, authorId:id  }, { $push: { subcategory: subcategory } }, { new: true })
+
         Update.isPublished = await blogModel.findOneAndUpdate({ _id: req.params.blogId , isDeleted:false, authorId:id }, { isPublished: true }, { new: true })
+
         Update.publishedAt = await blogModel.findOneAndUpdate({ _id: req.params.blogId, isDeleted:false, authorId:id  }, { publishedAt: String(new Date()) }, { new: true })
+        
         let updatedBlog = await blogModel.find({ _id: req.params.blogId, isDeleted:false, authorId:id })
 
         res.send({ data: updatedBlog })
