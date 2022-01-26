@@ -178,9 +178,10 @@ const updateBook = async function (req, res) {
   try {
     let bookIdInfo = req.params.bookId;
     let tokenId = req.user;
-
+    // console.log(typeof bookIdInfo)
+    // console.log(typeof tokenId)
     let info = await bookModel.findOne({ _id: bookIdInfo });
-
+    console.log("bookdata",info)
     if (!info) {
       return res
         .status(404)
@@ -192,19 +193,23 @@ const updateBook = async function (req, res) {
         .status(400)
         .send({ status: false, msg: "This book is no longer exists" });
     }
+    // console.log(typeof info.userId)//object
+    // console.log(typeof tokenId)//string
+    console.log(typeof info.userId.toString())//object
+    console.log(typeof tokenId)//string
 
-    if (info.userId === tokenId) {
+    if (info.userId.toString() === tokenId) {
       let update = req.body;
 
-      if (!isValidRequestBody(update)) {
+      if (!validator.isValidRequestBody(update)) {
         return res.status(400).send({
           status: false,
           message: " Invalid request parameters. Please provide details.",
         });
       }
 
-      const titleAlreadyUsed = await userModel.findOne({ title: update.title });
-
+      const titleAlreadyUsed = await bookModel.findOne({ title: update.title });
+      console.log( titleAlreadyUsed)//string
       if (titleAlreadyUsed) {
         return res
           .status(400)
@@ -213,7 +218,8 @@ const updateBook = async function (req, res) {
             message: `${update.title} Title is already registered`,
           });
       }
-      const isbnAlreadyUsed = await userModel.findOne({ isbn: update.isbn });
+      const isbnAlreadyUsed = await bookModel.findOne({ isbn: update.isbn });
+      console.log( isbnAlreadyUsed)//string
 
       if (isbnAlreadyUsed) {
         return res
@@ -275,7 +281,7 @@ const deleteBookById = async function (req, res) {
         .send({ status: false, msg: "This book is no longer Present" });
     }
 
-    if (findData.userId === tokenId) {
+    if (findData.userId.toString() === tokenId) {
       findData.isDeleted = true;
       findData.save();
       return res

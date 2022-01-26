@@ -140,6 +140,10 @@ const RegisterUser = async function (req, res) {
   return res.status(500).send({ status: false, msg: err.message });
 }}
 
+
+
+
+
 const Login = async function (req, res) {
  try{ 
    let requestBody = req.body;
@@ -182,7 +186,7 @@ const Login = async function (req, res) {
   }
 
   let payload = { _id: user._id };
- let token = jwt.sign(payload, "radium", { expiresIn: "30m" });
+ let token = jwt.sign(payload, "radium", { expiresIn: "60m" });
  // let token = jwt.sign(payload, "radium", { iat:Math.floor(Date.now()/1000),exp:Math.floor(Date.now()/1000)+30*60});
   res.header("x-auth-token", token);
   return res
